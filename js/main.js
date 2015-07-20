@@ -2,7 +2,7 @@
 window.onload = function () {
   'use strict';
   var scene, hours, hourText, hourPosY, faceWidth, spacing, markingsPath,
-    intervals, watchFace;
+    intervals, watchFace, midPointX, hand;
 
   scene = new Snap().attr({id: "#scene"});
   hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -50,4 +50,13 @@ window.onload = function () {
         strokeWidth: 1
       })
   );
+
+  // Adding watch hand
+  midPointX = faceWidth / 2;
+  hand = scene.line(midPointX, 0, midPointX, 400).attr({
+    fill: "none",
+    stroke: "red",
+    strokeWidth: 1
+  });
+
 };
