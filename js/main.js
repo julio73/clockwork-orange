@@ -3,8 +3,10 @@ window.onload = function () {
   'use strict';
   var scene, hours, watch, faceWidth, spacing;
 
-  scene = new Snap();
+  scene = new Snap().attr({id: "#scene"});
   hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  faceWidth = 800;
+  spacing = Math.round(faceWidth / hours.length);
 
   // Display some hours
   watch = scene.text(0, 100, hours).attr({
@@ -13,8 +15,6 @@ window.onload = function () {
   });
 
   // Evenly space out the hours
-  faceWidth = 800;
-  spacing = Math.round(faceWidth / hours.length);
   hours.forEach(function (hour, index) {
     watch.select("tspan:nth-child(" + (index + 1) + ")")
       .attr({
