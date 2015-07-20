@@ -11,4 +11,14 @@ window.onload = function () {
     font: "300 30px Helvetica Neue",
     textAnchor: "middle"
   });
+
+  // Evenly space out the hours
+  faceWidth = 800;
+  spacing = Math.round(faceWidth / hours.length);
+  hours.forEach(function (hour, index) {
+    watch.select("tspan:nth-child(" + (index + 1) + ")")
+      .attr({
+        x: spacing * hour
+      });
+  });
 };
