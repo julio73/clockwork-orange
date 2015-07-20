@@ -10,7 +10,7 @@ window.onload = function () {
 
   // Display some hours
   watch = scene.text(0, 100, hours).attr({
-    font: "300 30px Helvetica Neue",
+    font: "300 30px Courier New",
     textAnchor: "middle"
   });
 
