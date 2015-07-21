@@ -52,14 +52,16 @@ window.onload = function () {
       strokeWidth: 1
     });
 
-  // Add the markings and group them with hours under the watch face
-  watchFace = scene.group(hourText, markings);
+  // Then the watch hand
+  hand = scene
+    .line(midPointX, hourPosY / 2, midPointX, hourPosY * 1.5)
+    .attr({
+      fill: "none",
+      stroke: "red",
+      strokeWidth: 1
+    });
 
-  // Adding watch hand
-  hand = scene.line(midPointX, 0, midPointX, 400).attr({
-    fill: "none",
-    stroke: "red",
-    strokeWidth: 1
-  });
+  // And group them under the watch face
+  watchFace = scene.group(hourText, markings, hand);
 
 };
