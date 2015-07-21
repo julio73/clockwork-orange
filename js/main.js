@@ -1,20 +1,19 @@
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing,
-    markings, markingsPath, hourTSpans, intervals, watchFace, midPointX, hand,
-    movable;
+  var scene, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans, faceWidth,
+    midX, spacing, markings, markingsPath, gaps, hand, movable, watchFace;
 
   scene = new Snap().attr({id: "#scene"});
   canvas = scene.rect(20, 20, 780, 180).attr({fill: '#FFF'});
-  hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceWidth = 720;
-  hourPosY = 100;
-  hourPosX = 50;
-  midPointX = faceWidth / 2 + hourPosX;
-  spacing = faceWidth / hours.length;
+  hoursY = 100;
+  hoursX = 50;
+  midX = faceWidth / 2 + hoursX;
+  spacing = faceWidth / 12;
   markingsPath = "";
-  intervals = {
+  gaps = {
     0: 0,
     1: spacing / 6,
     2: spacing * 2 / 6,
@@ -24,24 +23,25 @@ window.onload = function () {
   };
 
   // Display some hours
-  hourText = scene.text(0, hourPosY, hours).attr({
+  hours = scene.text(0, hoursY, hoursNums).attr({
     font: "300 24px Courier New",
     textAnchor: "middle"
   });
 
   // Evenly space out the hours and build marking path
-  hourTSpans = hourText.selectAll("tspan");
-  hours.forEach(function (hour, index) {
-    var posx = hourPosX + spacing * hour;
+  hourTSpans = hours.selectAll("tspan");
+  hoursNums.forEach(function (hour, index) {
+    var posx = hoursX + spacing * hour;
     // Select hour and move it
     hourTSpans[index].attr({x: posx});
     // Build marking path
-    markingsPath += "M" + [posx - intervals[0], hourPosY + 15, posx - intervals[0], hourPosY + 30]
-      + "M" + [posx - intervals[1], hourPosY + 27, posx - intervals[1], hourPosY + 30]
-      + "M" + [posx - intervals[2], hourPosY + 27, posx - intervals[2], hourPosY + 30]
-      + "M" + [posx - intervals[3], hourPosY + 21, posx - intervals[3], hourPosY + 30]
-      + "M" + [posx - intervals[4], hourPosY + 27, posx - intervals[4], hourPosY + 30]
-      + "M" + [posx - intervals[5], hourPosY + 27, posx - intervals[5], hourPosY + 30];
+    markingsPath
+      += "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30]
+      + "M" + [posx - gaps[1], hoursY + 27, posx - gaps[1], hoursY + 30]
+      + "M" + [posx - gaps[2], hoursY + 27, posx - gaps[2], hoursY + 30]
+      + "M" + [posx - gaps[3], hoursY + 21, posx - gaps[3], hoursY + 30]
+      + "M" + [posx - gaps[4], hoursY + 27, posx - gaps[4], hoursY + 30]
+      + "M" + [posx - gaps[5], hoursY + 27, posx - gaps[5], hoursY + 30];
   });
 
   // Add the markings 
@@ -54,7 +54,7 @@ window.onload = function () {
 
   // Then the watch hand
   hand = scene
-    .line(midPointX, hourPosY / 2, midPointX, hourPosY * 1.5)
+    .line(midX, hoursY / 2, midX, hoursY * 1.5)
     .attr({
       fill: "none",
       stroke: "red",
@@ -62,13 +62,13 @@ window.onload = function () {
     });
 
   // And group them under the watch face
-  movable = scene.group(hourText, markings);
+  movable = scene.group(hours, markings);
   watchFace = scene.group(canvas, movable, hand);
 
   // Then add a clipping mask
   watchFace.attr({
     clip: scene
-      .rect(hourPosX + spacing, hourPosY / 2, faceWidth - 2 * spacing, hourPosY)
+      .rect(hoursX + spacing, hoursY / 2, faceWidth - 2 * spacing, hoursY)
   });
 
 };
