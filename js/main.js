@@ -2,7 +2,7 @@
 window.onload = function () {
   'use strict';
   var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing,
-    markingsPath, hourTSpans, intervals, watchFace, midPointX, hand;
+    markings, markingsPath, hourTSpans, intervals, watchFace, midPointX, hand;
 
 
   scene = new Snap().attr({id: "#scene"});
@@ -44,16 +44,16 @@ window.onload = function () {
       + "M" + [posx - intervals[5], hourPosY + 27, posx - intervals[5], hourPosY + 30];
   });
 
+  // Add the markings 
+  markings = scene.path(markingsPath)
+    .attr({
+      fill: "none",
+      stroke: "#000",
+      strokeWidth: 1
+    });
+
   // Add the markings and group them with hours under the watch face
-  watchFace = scene.group(
-    hourText,
-    scene.path(markingsPath)
-      .attr({
-        fill: "none",
-        stroke: "#000",
-        strokeWidth: 1
-      })
-  );
+  watchFace = scene.group(hourText, markings);
 
   // Adding watch hand
   hand = scene.line(midPointX, 0, midPointX, 400).attr({
