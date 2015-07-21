@@ -2,8 +2,8 @@
 window.onload = function () {
   'use strict';
   var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing,
-    markings, markingsPath, hourTSpans, intervals, watchFace, midPointX, hand;
-
+    markings, markingsPath, hourTSpans, intervals, watchFace, midPointX, hand,
+    movable;
 
   scene = new Snap().attr({id: "#scene"});
   canvas = scene.rect(20, 20, 780, 180).attr({fill: '#FFF'});
@@ -62,6 +62,13 @@ window.onload = function () {
     });
 
   // And group them under the watch face
-  watchFace = scene.group(hourText, markings, hand);
+  movable = scene.group(hourText, markings);
+  watchFace = scene.group(canvas, movable, hand);
+
+  // Then add a clipping mask
+  watchFace.attr({
+    clip: scene
+      .rect(hourPosX + spacing, hourPosY / 2, faceWidth - 2 * spacing, hourPosY)
+  });
 
 };
