@@ -1,17 +1,22 @@
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans, faceWidth,
-    midX, spacing, markings, markingsPath, gaps, hand, movable, watchFace;
+  var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
+    faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand, movable,
+    watchFace;
 
-  scene = new Snap().attr({id: "#scene"});
-  canvas = scene.rect(20, 20, 780, 180).attr({fill: '#FFF'});
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  faceWidth = 720;
-  hoursY = 100;
-  hoursX = 50;
-  midX = faceWidth / 2 + hoursX;
-  spacing = faceWidth / 12;
+  faceW = 720; // 6! (factorial)
+  faceH = faceW / 6;
+  padding = 20;
+  scene = new Snap(faceW + padding * 4, faceH + padding * 2).attr({id: "#scn"});
+  canvas = scene
+    .rect(padding, padding, faceW + 2 * padding, faceH)
+    .attr({fill: '#FFF'});
+  hoursY = faceH - padding * 2;
+  hoursX = padding * 2;
+  midX = hoursX + faceW / 2;
+  spacing = faceW / 12;
   markingsPath = "";
   gaps = {
     0: 0,
@@ -23,8 +28,9 @@ window.onload = function () {
   };
 
   // Display some hours
-  hours = scene.text(0, hoursY, hoursNums).attr({
-    font: "300 24px Courier New",
+  hours = scene.text(hoursX, hoursY, hoursNums).attr({
+    fontFamily: "Courier New",
+    fontSize: "20px",
     textAnchor: "middle"
   });
 
@@ -54,7 +60,7 @@ window.onload = function () {
 
   // Then the watch hand
   hand = scene
-    .line(midX, hoursY / 2, midX, hoursY * 1.5)
+    .line(midX, padding, midX, faceH + padding)
     .attr({
       fill: "none",
       stroke: "#f40",
@@ -67,8 +73,7 @@ window.onload = function () {
 
   // Then add a clipping mask
   watchFace.attr({
-    clip: scene
-      .rect(hoursX + spacing, hoursY / 2, faceWidth - 2 * spacing, hoursY)
+    clip: scene.rect(padding * 2, padding * 2, faceW, faceH - padding * 2)
   });
 
 };
