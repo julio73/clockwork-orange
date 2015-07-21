@@ -32,7 +32,7 @@ window.onload = function () {
   // Evenly space out the hours and build marking path
   hourTSpans = hourText.selectAll("tspan");
   hours.forEach(function (hour, index) {
-    var posx = spacing * hour;
+    var posx = hourPosX + spacing * hour;
     // Select hour and move it
     hourTSpans[index].attr({x: posx});
     // Build marking path
