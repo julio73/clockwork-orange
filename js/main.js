@@ -1,22 +1,17 @@
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, hours, hourText, hourPosY, faceWidth, spacing, markingsPath,
+  var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing, markingsPath,
     intervals, watchFace, midPointX, hand;
 
   scene = new Snap().attr({id: "#scene"});
+  canvas = scene.rect(20, 20, 780, 180).attr({fill: '#FFF'});
   hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceWidth = 720;
-  spacing = faceWidth / hours.length;
-
-  // Display some hours
   hourPosY = 100;
-  hourText = scene.text(0, hourPosY, hours).attr({
-    font: "300 24px Courier New",
-    textAnchor: "middle"
-  });
-
-  // Evenly space out the hours and build marking path
+  hourPosX = 50;
+  midPointX = faceWidth / 2 + hourPosX;
+  spacing = faceWidth / hours.length;
   markingsPath = "";
   intervals = {
     0: 0,
@@ -26,6 +21,14 @@ window.onload = function () {
     4: spacing * 4 / 6,
     5: spacing * 5 / 6
   };
+
+  // Display some hours
+  hourText = scene.text(0, hourPosY, hours).attr({
+    font: "300 24px Courier New",
+    textAnchor: "middle"
+  });
+
+  // Evenly space out the hours and build marking path
   hours.forEach(function (hour, index) {
     var posx = spacing * hour;
     // Select hour and move it
@@ -52,7 +55,6 @@ window.onload = function () {
   );
 
   // Adding watch hand
-  midPointX = faceWidth / 2;
   hand = scene.line(midPointX, 0, midPointX, 400).attr({
     fill: "none",
     stroke: "red",
