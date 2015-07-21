@@ -57,7 +57,7 @@ window.onload = function () {
     .line(midX, hoursY / 2, midX, hoursY * 1.5)
     .attr({
       fill: "none",
-      stroke: "red",
+      stroke: "#f40",
       strokeWidth: 1
     });
 
