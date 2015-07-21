@@ -1,8 +1,9 @@
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing, markingsPath,
-    intervals, watchFace, midPointX, hand;
+  var scene, canvas, hourPosX, hours, hourText, hourPosY, faceWidth, spacing,
+    markingsPath, hourTSpans, intervals, watchFace, midPointX, hand;
+
 
   scene = new Snap().attr({id: "#scene"});
   canvas = scene.rect(20, 20, 780, 180).attr({fill: '#FFF'});
@@ -29,11 +30,11 @@ window.onload = function () {
   });
 
   // Evenly space out the hours and build marking path
+  hourTSpans = hourText.selectAll("tspan");
   hours.forEach(function (hour, index) {
     var posx = spacing * hour;
     // Select hour and move it
-    hourText.select("tspan:nth-child(" + (index + 1) + ")")
-      .attr({x: posx});
+    hourTSpans[index].attr({x: posx});
     // Build marking path
     markingsPath += "M" + [posx - intervals[0], hourPosY + 15, posx - intervals[0], hourPosY + 30]
       + "M" + [posx - intervals[1], hourPosY + 27, posx - intervals[1], hourPosY + 30]
