@@ -9,10 +9,15 @@
       background: rgb(48,78,125);
       margin: 0;
     }
+    .unselectable {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
   </style>
   <script src="js/snap.svg-min.js" async></script>
   <script src="js/main.js" async></script>
 </head>
-<body>
+<body class="unselectable">
 </body>
 </html>
