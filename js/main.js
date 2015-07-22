@@ -2,7 +2,7 @@
 window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
-    faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand, movable,
+    faceH, faceW, midX, spacing, start, markings, markingsPath, gaps, hand,
     watchFace;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -50,13 +50,11 @@ window.onload = function () {
       + "M" + [posx - gaps[5], hoursY + 27, posx - gaps[5], hoursY + 30];
   });
 
-  // Add the markings 
-  markings = scene.path(markingsPath)
-    .attr({
-      fill: "none",
-      stroke: "#000",
-      strokeWidth: 1
-    });
+  // Add the markings
+  start = scene
+    .path("M" + [hoursX, hoursY + 30, hoursX, hoursY] + "m" + [-5, 0, 10, 0])
+    .attr({stroke: '#000'});
+  markings = scene.path(markingsPath).attr({stroke: "#000"});
 
   // Then the watch hand
   hand = scene
@@ -68,12 +66,12 @@ window.onload = function () {
     });
 
   // And group them under the watch face
-  movable = scene.group(hours, markings);
-  watchFace = scene.group(canvas, movable, hand);
+  watchFace = scene.group(canvas, start, hours, markings, hand);
 
   // Then add a clipping mask
   watchFace.attr({
-    clip: scene.rect(padding * 2, padding * 2, faceW, faceH - padding * 2)
+    clip: scene
+      .rect(padding * 1.5, padding * 2, faceW + padding, faceH - padding * 2)
   });
 
 };
