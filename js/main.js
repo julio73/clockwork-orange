@@ -85,6 +85,6 @@ window.onload = function () {
   }
 
   // Initialize updater after 0.5s
-  window.setTimeout(updateHandX, 2000);
+  window.setTimeout(updateHandX, 500);
 
 };
