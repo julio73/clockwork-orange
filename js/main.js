@@ -2,8 +2,8 @@
 window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
-    faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand,
-    watchFace;
+    faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand, handX,
+    newHandX, watchFace;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -70,5 +70,22 @@ window.onload = function () {
     clip: scene
       .rect(padding * 1.5, padding * 2, faceW + padding, faceH - padding * 2)
   });
+
+  window.sleep(1000);
+  // Update hand location in animation frame
+  function updateHandX() {
+    var d = new Date(),
+      t = [d.getHours(), d.getMinutes(), d.getSeconds()];
+    newHandX = hoursX + spacing
+      * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
+    if (handX !== newHandX) {
+      handX = newHandX;
+      hand.attr({'x1': handX, 'x2': handX});
+    }
+    window.requestAnimationFrame(updateHandX);
+  }
+
+  // Initialize updater after 0.5s
+  window.setTimeout(updateHandX, 2000);
 
 };
