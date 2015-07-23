@@ -71,7 +71,6 @@ window.onload = function () {
       .rect(padding * 1.5, padding * 2, faceW + padding, faceH - padding * 2)
   });
 
-  window.sleep(1000);
   // Update hand location in animation frame
   function updateHandX() {
     var d = new Date(),
