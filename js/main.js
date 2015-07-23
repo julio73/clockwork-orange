@@ -3,7 +3,7 @@ window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
     faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand, handX,
-    newHandX, watchFace;
+    newHandX, watchFace, time;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -62,8 +62,19 @@ window.onload = function () {
       strokeWidth: 1
     });
 
+  // Add current time as well
+  time = scene
+    .text(midX, padding * 2.5, "...")
+    .attr({
+      fontFamily: "Courier New",
+      fontSize: "10px",
+      fontWeight: "nonrmal",
+      textAnchor: "middle",
+      stroke: "#f40"
+    });
+
   // And group them under the watch face
-  watchFace = scene.group(canvas, hours, markings, hand);
+  watchFace = scene.group(canvas, hours, time, markings, hand);
 
   // Then add a clipping mask
   watchFace.attr({
