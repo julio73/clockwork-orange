@@ -68,7 +68,7 @@ window.onload = function () {
   // Then add a clipping mask
   watchFace.attr({
     clip: scene
-      .rect(padding * 1.5, padding * 2, faceW + padding, faceH - padding * 2)
+      .rect(padding * 1.5, padding * 1.5, faceW + padding, faceH - padding * 1.5)
   });
 
   // Update hand location in animation frame
