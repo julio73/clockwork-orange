@@ -9,7 +9,7 @@ window.onload = function () {
   faceW = 720; // 6! (factorial)
   faceH = faceW / 6;
   padding = 20;
-  scene = new Snap(faceW + padding * 4, faceH + padding * 2).attr({id: "#scn"});
+  scene = new Snap(faceW + padding * 4, faceH + padding * 2).attr({id: "scn"});
   canvas = scene
     .rect(padding, padding, faceW + 2 * padding, faceH)
     .attr({fill: '#FFF'});
