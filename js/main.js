@@ -86,7 +86,6 @@ window.onload = function () {
         fontFamily: "Courier New",
         fontSize: "15px",
         textAnchor: t_anchor,
-        stroke: "#f40",
         fill: "#f40"
       });
     // Launch updater
