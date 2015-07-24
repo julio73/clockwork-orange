@@ -89,26 +89,31 @@ window.onload = function () {
         fill: "#f40"
       });
     // Launch updater
-    window.setInterval(function () {
-      d = new Date();
-      t = [d.getHours(), d.getMinutes(), d.getSeconds()];
-      t_display = d.toLocaleTimeString();
-      t_anchor = (t[0] % 12 <= 6) ? "start" : "end";
-      newHandX = hoursX + spacing
-        * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
-      t_posx = newHandX + (t_anchor === "start" ? 10 : -10);
-      window.requestAnimationFrame(function () {
-        time.node.innerHTML = t_display;
-        time.attr({
-          x: t_posx,
-          textAnchor: t_anchor
+    function updater() {
+      var new_d = new Date();
+      if (d.getSeconds() !== new_d.getSeconds()) {
+        d = new_d;
+        t = [d.getHours(), d.getMinutes(), d.getSeconds()];
+        t_display = d.toLocaleTimeString();
+        t_anchor = (t[0] % 12 <= 6) ? "start" : "end";
+        newHandX = hoursX + spacing
+          * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
+        t_posx = newHandX + (t_anchor === "start" ? 10 : -10);
+        window.requestAnimationFrame(function () {
+          time.node.innerHTML = t_display;
+          time.attr({
+            x: t_posx,
+            textAnchor: t_anchor
+          });
+          if (handX !== newHandX) {
+            handX = newHandX;
+            hand.attr({'x1': handX, 'x2': handX});
+          }
         });
-        if (handX !== newHandX) {
-          handX = newHandX;
-          hand.attr({'x1': handX, 'x2': handX});
-        }
-      });
-    }, 1000);
+      }
+      window.requestAnimationFrame(updater);
+    }
+    window.requestAnimationFrame(updater);
   }
 
   // Start clock
