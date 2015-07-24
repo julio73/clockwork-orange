@@ -2,8 +2,8 @@
 window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
-    faceH, faceW, midX, spacing, markings, markingsPath, gaps, hand, handX,
-    newHandX, watchFace, time;
+    faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
+    watchFace, time;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -15,7 +15,6 @@ window.onload = function () {
     .attr({fill: '#FFF'});
   hoursY = faceH - padding * 2;
   hoursX = padding * 2;
-  midX = hoursX + faceW / 2;
   spacing = faceW / 12;
   markingsPath = "M" + [hoursX, hoursY + 30, hoursX, hoursY] + "m-5,0,10,0";
   gaps = {
@@ -53,17 +52,8 @@ window.onload = function () {
   // Add the markings
   markings = scene.path(markingsPath).attr({stroke: "#000"});
 
-  // Then the watch hand
-  hand = scene
-    .line(midX, padding, midX, faceH + padding)
-    .attr({
-      fill: "none",
-      stroke: "#f40",
-      strokeWidth: 1
-    });
-
   // And group them under the watch face
-  watchFace = scene.group(canvas, hours, markings, hand);
+  watchFace = scene.group(canvas, hours, markings);
 
   // Then add a clipping mask
   watchFace.attr({
@@ -71,48 +61,58 @@ window.onload = function () {
       .rect(padding * 1.5, padding * 1.5, faceW + padding, faceH - padding * 1.5)
   });
 
-  // Update newHandX every 1s
-  window.setInterval(function () {
+  // Initialize updater
+  function initializeUpdater() {
+    // Initial time value
     var d = new Date(),
       t = [d.getHours(), d.getMinutes(), d.getSeconds()],
-      t_posx = null,
       t_display = d.toLocaleTimeString(),
-      t_anchor = (t[0] % 12 <= 6) ? "left" : "right";
-    newHandX = hoursX + spacing
-      * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
-    t_posx = newHandX + (t_anchor === "left" ? 10 : -100); // temp fix
-    if (time === null) {
-      time = scene
-        .text(t_posx, padding * 2.5, t_display)
-        .attr({
-          fontFamily: "Courier New",
-          fontSize: "15px",
-          textAnchor: t_anchor,
-          stroke: "#f40",
-          fill: "#f40"
-        });
-    } else {
-      time.node.innerHTML = t_display;
-      time.attr({
-        x: t_posx,
-        textAnchor: t_anchor
+      t_anchor = (t[0] % 12 <= 6) ? "left" : "right",
+      newHandX = hoursX + spacing
+        * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600)),
+      t_posx = newHandX + (t_anchor === "left" ? 10 : -105); // temp fix
+    // Set initial hand and time location
+    hand = scene
+      .line(newHandX, padding * 1.5, newHandX, faceH)
+      .attr({
+        fill: "none",
+        stroke: "#f40",
+        strokeWidth: 1
       });
-    }
-  }, 1000);
-
-  // Update hand location in animation frame
-  function updateHandX() {
-    if (handX !== newHandX) {
-      handX = newHandX;
-      hand.attr({'x1': handX, 'x2': handX});
-    }
-    window.requestAnimationFrame(updateHandX);
+    time = scene
+      .text(t_posx, padding * 2.5, t_display)
+      .attr({
+        zIndex: 2,
+        fontFamily: "Courier New",
+        fontSize: "15px",
+        textAnchor: t_anchor,
+        stroke: "#f40",
+        fill: "#f40"
+      });
+    // Launch updater
+    window.setInterval(function () {
+      d = new Date();
+      t = [d.getHours(), d.getMinutes(), d.getSeconds()];
+      t_display = d.toLocaleTimeString();
+      t_anchor = (t[0] % 12 <= 6) ? "left" : "right";
+      newHandX = hoursX + spacing
+        * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
+      t_posx = newHandX + (t_anchor === "left" ? 10 : -105); // temp fix;
+      window.requestAnimationFrame(function () {
+        time.node.innerHTML = t_display;
+        time.attr({
+          x: t_posx,
+          textAnchor: t_anchor
+        });
+        if (handX !== newHandX) {
+          handX = newHandX;
+          hand.attr({'x1': handX, 'x2': handX});
+        }
+      });
+    }, 1000);
   }
 
-  // Initialize updater after 0.5s
-  window.setTimeout(function () {
-    time = null;
-    updateHandX();
-  }, 500);
+  // Start clock
+  initializeUpdater();
 
 };
