@@ -109,9 +109,11 @@ window.onload = function () {
             handX = newHandX;
             hand.attr({'x1': handX, 'x2': handX});
           }
+          updater();
         });
+      } else {
+        window.requestAnimationFrame(updater);
       }
-      window.requestAnimationFrame(updater);
     }
     window.requestAnimationFrame(updater);
   }
