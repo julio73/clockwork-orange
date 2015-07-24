@@ -62,19 +62,8 @@ window.onload = function () {
       strokeWidth: 1
     });
 
-  // Add current time as well
-  time = scene
-    .text(midX, padding * 2.5, "...")
-    .attr({
-      fontFamily: "Courier New",
-      fontSize: "10px",
-      fontWeight: "nonrmal",
-      textAnchor: "middle",
-      stroke: "#f40"
-    });
-
   // And group them under the watch face
-  watchFace = scene.group(canvas, hours, time, markings, hand);
+  watchFace = scene.group(canvas, hours, markings, hand);
 
   // Then add a clipping mask
   watchFace.attr({
@@ -82,12 +71,37 @@ window.onload = function () {
       .rect(padding * 1.5, padding * 1.5, faceW + padding, faceH - padding * 1.5)
   });
 
-  // Update hand location in animation frame
-  function updateHandX() {
+  // Update newHandX every 1s
+  window.setInterval(function () {
     var d = new Date(),
-      t = [d.getHours(), d.getMinutes(), d.getSeconds()];
+      t = [d.getHours(), d.getMinutes(), d.getSeconds()],
+      t_posx = null,
+      t_display = d.toLocaleTimeString(),
+      t_anchor = (t[0] % 12 <= 6) ? "left" : "right";
     newHandX = hoursX + spacing
       * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
+    t_posx = newHandX + (t_anchor === "left" ? 10 : -100); // temp fix
+    if (time === null) {
+      time = scene
+        .text(t_posx, padding * 2.5, t_display)
+        .attr({
+          fontFamily: "Courier New",
+          fontSize: "15px",
+          textAnchor: t_anchor,
+          stroke: "#f40",
+          fill: "#f40"
+        });
+    } else {
+      time.node.innerHTML = t_display;
+      time.attr({
+        x: t_posx,
+        textAnchor: t_anchor
+      });
+    }
+  }, 1000);
+
+  // Update hand location in animation frame
+  function updateHandX() {
     if (handX !== newHandX) {
       handX = newHandX;
       hand.attr({'x1': handX, 'x2': handX});
@@ -96,6 +110,9 @@ window.onload = function () {
   }
 
   // Initialize updater after 0.5s
-  window.setTimeout(updateHandX, 500);
+  window.setTimeout(function () {
+    time = null;
+    updateHandX();
+  }, 500);
 
 };
