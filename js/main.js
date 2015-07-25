@@ -101,11 +101,11 @@ window.onload = function () {
         t_posx = newHandX + (t_anchor === "start" ? 10 : -10);
         window.requestAnimationFrame(function () {
           time.node.innerHTML = t_display;
-          time.attr({
-            x: t_posx,
-            textAnchor: t_anchor
-          });
           if (handX !== newHandX) {
+            time.attr({
+              x: t_posx,
+              textAnchor: t_anchor
+            });
             handX = newHandX;
             hand.attr({'x1': handX, 'x2': handX});
           }
