@@ -68,8 +68,7 @@ window.onload = function () {
       t = [d.getHours(), d.getMinutes(), d.getSeconds()],
       t_display = d.toLocaleTimeString(),
       t_anchor = (t[0] % 12 <= 6) ? "start" : "end",
-      newHandX = hoursX + spacing
-        * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600)),
+      newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60)),
       t_posx = newHandX + (t_anchor === "start" ? 10 : -10); // temp fix
     // Set initial hand and time location
     hand = scene
@@ -96,8 +95,7 @@ window.onload = function () {
         t = [d.getHours(), d.getMinutes(), d.getSeconds()];
         t_display = d.toLocaleTimeString();
         t_anchor = (t[0] % 12 <= 6) ? "start" : "end";
-        newHandX = hoursX + spacing
-          * ((t[0] % 12) + (t[1] / 60) + ((Math.floor(t[2] / 60) * 60) / 3600));
+        newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60));
         t_posx = newHandX + (t_anchor === "start" ? 10 : -10);
         window.requestAnimationFrame(function () {
           time.node.innerHTML = t_display;
