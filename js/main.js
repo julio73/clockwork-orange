@@ -119,4 +119,7 @@ window.onload = function () {
   // Start clock
   initializeUpdater();
 
+  // Group hand & time
+  scene.group(hand, time).attr('id', "time_and_hand");
+
 };
