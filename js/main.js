@@ -53,7 +53,7 @@ window.onload = function () {
   markings = scene.path(markingsPath).attr({stroke: "#000"});
 
   // And group them under the watch face
-  watchFace = scene.group(hours, markings);
+  watchFace = scene.group(hours, markings).data('visible', true);
 
   // Then add a clipping mask
   scene.group(canvas, watchFace).attr({
