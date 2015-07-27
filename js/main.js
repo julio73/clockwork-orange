@@ -119,7 +119,12 @@ window.onload = function () {
   // Start clock
   initializeUpdater();
 
-  // Group hand & time
-  scene.group(hand, time).attr('id', "time_and_hand");
+  // Group hand & time then cycle thru faces
+  scene.group(hand, time).attr('id', "time_and_hand")
+    .click(function () {
+      // TODONE: Add swaps
+      return;
+    });
+
 
 };
