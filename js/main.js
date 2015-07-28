@@ -3,7 +3,7 @@ window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
     faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
-    watchFace, time, movement;
+    WF1, time, movement, displayFn, currentFace;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -52,11 +52,11 @@ window.onload = function () {
   // Add the markings
   markings = scene.path(markingsPath).attr({stroke: "#000"});
 
-  // And group them under the watch face
-  watchFace = scene.group(hours, markings).data('visible', true);
+  // And group them as the main watch face
+  WF1 = scene.group(hours, markings);
 
   // Then add a clipping mask
-  scene.group(canvas, watchFace).attr({
+  scene.group(canvas, WF1).attr({
     clip: scene
       .rect(padding * 1.5, padding * 1.5, faceW + padding, faceH - padding * 1.5)
   });
@@ -122,15 +122,30 @@ window.onload = function () {
   // Group hand & time
   movement = scene.group(hand, time);
 
-  // Then cycle thru faces on movement click
-  movement
-    .click(function () {
-      var isVisible = watchFace.data('visible');
-      Snap.animate(0, 1, function (val) {
-        watchFace.node.style.opacity = (isVisible ? 1 - val : val);
+  // Display functions for each face
+  displayFn = {
+    // Number of registered faces
+    registered: 2,
+    // Hide WF1
+    0: function () {
+      Snap.animate(1, 0, function (val) {
+        WF1.node.style.opacity = val;
       }, 100);
-      watchFace.data('visible', !isVisible);
-    });
+    },
+    // Reveal WF1
+    1: function () {
+      Snap.animate(0, 1, function (val) {
+        WF1.node.style.opacity = val;
+      }, 100);
+    }
+  };
+
+  // Then cycle thru faces on movement click
+  currentFace = 1;
+  movement.click(function () {
+    currentFace = (currentFace + 1) % displayFn.registered;
+    displayFn[currentFace]();
+  });
 
 
 };
