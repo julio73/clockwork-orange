@@ -126,7 +126,9 @@ window.onload = function () {
   movement
     .click(function () {
       var isVisible = watchFace.data('visible');
-      watchFace.node.style.opacity = (isVisible ? 0 : 1);
+      Snap.animate(0, 1, function (val) {
+        watchFace.node.style.opacity = (isVisible ? 1 - val : val);
+      }, 100);
       watchFace.data('visible', !isVisible);
     });
 
