@@ -3,7 +3,7 @@ window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
     faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
-    WF1, time, movement, displayFn, currentFace;
+    WF1, time, timeX, timeY, movement, displayFn, currentFace;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -68,8 +68,8 @@ window.onload = function () {
       t = [d.getHours(), d.getMinutes(), d.getSeconds()],
       t_display = d.toLocaleTimeString(),
       t_anchor = (t[0] % 12 <= 6) ? "start" : "end",
-      newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60)),
-      t_posx = newHandX + (t_anchor === "start" ? 10 : -10); // temp fix
+      newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60));
+    timeX = newHandX + (t_anchor === "start" ? 10 : -10); // temp fix
     // Set initial hand and time location
     hand = scene
       .line(newHandX, padding * 1.5, newHandX, faceH)
@@ -78,8 +78,9 @@ window.onload = function () {
         stroke: "#f40",
         strokeWidth: 1
       });
+    timeY = padding * 2.5;
     time = scene
-      .text(t_posx, padding * 2.5, t_display)
+      .text(timeX, timeY, t_display)
       .attr({
         fontFamily: "Courier New",
         fontSize: "15px",
@@ -95,12 +96,12 @@ window.onload = function () {
         t_display = d.toLocaleTimeString();
         t_anchor = (t[0] % 12 <= 6) ? "start" : "end";
         newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60));
-        t_posx = newHandX + (t_anchor === "start" ? 10 : -10);
+        timeX = newHandX + (t_anchor === "start" ? 10 : -10);
         window.requestAnimationFrame(function () {
           time.node.innerHTML = t_display;
           if (handX !== newHandX) {
             time.attr({
-              x: t_posx,
+              x: timeX,
               textAnchor: t_anchor
             });
             handX = newHandX;
