@@ -81,7 +81,6 @@ window.onload = function () {
     time = scene
       .text(t_posx, padding * 2.5, t_display)
       .attr({
-        zIndex: 2,
         fontFamily: "Courier New",
         fontSize: "15px",
         textAnchor: t_anchor,
