@@ -3,7 +3,7 @@ window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
     faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
-    watchFace, time;
+    watchFace, time, movement;
 
   hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -119,11 +119,15 @@ window.onload = function () {
   // Start clock
   initializeUpdater();
 
-  // Group hand & time then cycle thru faces
-  scene.group(hand, time).attr('id', "time_and_hand")
+  // Group hand & time
+  movement = scene.group(hand, time);
+
+  // Then cycle thru faces on movement click
+  movement
     .click(function () {
-      // TODONE: Add swaps
-      return;
+      var isVisible = watchFace.data('visible');
+      watchFace.node.style.opacity = (isVisible ? 0 : 1);
+      watchFace.data('visible', !isVisible);
     });
 
 
