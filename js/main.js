@@ -126,17 +126,27 @@ window.onload = function () {
   displayFn = {
     // Number of registered faces
     registered: 2,
-    // Hide WF1
     0: function () {
-      Snap.animate(1, 0, function (val) {
-        WF1.node.style.opacity = val;
-      }, 100);
+      Snap.animate(0, 1, function (val) {
+        // Move in large view
+        time.transform(
+          's' + [1 + val, 1 + val, timeX, timeY]
+            + 't' + [0, 15 * val]
+        );
+        // Hide WF1
+        WF1.node.style.opacity = 1 - val;
+      }, 160);
     },
-    // Reveal WF1
     1: function () {
       Snap.animate(0, 1, function (val) {
+        // Move out large view
+        time.transform(
+          's' + [1.5 - (0.5 * val), 1.5 - (0.5 * val), timeX, timeY]
+            + 't' + [0, 15 * (1 - val)]
+        );
+        // Show WF1
         WF1.node.style.opacity = val;
-      }, 100);
+      }, 160);
     }
   };
 
