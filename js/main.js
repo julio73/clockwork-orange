@@ -1,146 +1,210 @@
+/**
+ * Clockwork-orange
+ * Copyright (C) 2015 Julio Maniratunga
+ * Powered by Snap.svg 0.4.1
+ */
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
-    faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
-    WF1, time, timeX, timeY, displayFn, currentFace;
+  var scene, watch, WF1, timer, movement, displayFn, currentFace;
 
-  hoursNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  faceW = 720; // 6! (factorial)
-  faceH = faceW / 6;
-  padding = 20;
-  scene = new Snap(faceW + padding * 4, faceH + padding * 2).attr({id: "scn"});
-  canvas = scene
-    .rect(padding, padding, faceW + 2 * padding, faceH)
-    .attr({fill: '#FFF'});
-  hoursY = faceH - padding * 2;
-  hoursX = padding * 2;
-  spacing = faceW / 12;
-  gaps = {
-    0: 0,
-    1: spacing / 6,
-    2: spacing * 2 / 6,
-    3: spacing * 3 / 6,
-    4: spacing * 4 / 6,
-    5: spacing * 5 / 6
+  // Setup the watch
+  watch = {
+    wdt: 720,   // width: 6! (factorial)
+    hgt: 120,   // height: wdt / 6
+    pad: 20,    // padding: hgt / 6 
+    canvas: null,
+    bkgrd: '#FFF' // background color
   };
 
-  // Display some hours
-  hours = scene.text(hoursX, hoursY, hoursNums).attr({
-    fontFamily: "Courier New",
-    fontSize: "20px",
-    textAnchor: "middle"
-  });
+  // Base the scene on watch 
+  scene = new Snap(watch.wdt + watch.pad * 4, watch.hgt + watch.pad * 2)
+                .attr({id: "scn"});
 
-  // Evenly space out the hours and build marking path
-  markingsPath = "";
-  hourTSpans = hours.selectAll("tspan");
-  hoursNums.forEach(function (hour, index) {
-    var posx = hoursX + spacing * hour;
-      // Select hour and move it
-    hourTSpans[index].attr({x: posx});
-    if (hour === 0) {
-      markingsPath +=
-        "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30];
-    } else {
-      // Build marking path
-      markingsPath
-        += "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30]
-        + "M" + [posx - gaps[1], hoursY + 27, posx - gaps[1], hoursY + 30]
-        + "M" + [posx - gaps[2], hoursY + 27, posx - gaps[2], hoursY + 30]
-        + "M" + [posx - gaps[3], hoursY + 21, posx - gaps[3], hoursY + 30]
-        + "M" + [posx - gaps[4], hoursY + 27, posx - gaps[4], hoursY + 30]
-        + "M" + [posx - gaps[5], hoursY + 27, posx - gaps[5], hoursY + 30];
-    }
-  });
+  // Put the watch canvas on the scene
+  watch.canvas = scene
+    .rect(watch.pad, watch.pad * 1.5,
+      watch.wdt + 2 * watch.pad, watch.hgt - watch.pad)
+    .attr({fill: watch.bkgrd});
 
-  // Add the markings
-  markings = scene.path(markingsPath).attr({stroke: "#000"});
-
-  // And group them as the main watch face
-  WF1 = scene.group(hours, markings);
-
-  // Then add a clipping mask
-  scene.group(canvas, WF1).attr({
-    clip: scene
-      .rect(padding * 1.5, padding * 1.5, faceW + padding, faceH - padding * 1.5)
-  });
-
-  // Initialize updater
-  function initializeUpdater() {
-    // Initial time value
-    var d = new Date(),
-      t = [d.getHours(), d.getMinutes(), d.getSeconds()],
-      t_display = d.toLocaleTimeString(),
-      t_anchor = (t[0] % 12 <= 6) ? "start" : "end",
-      newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60));
-    timeX = newHandX + (t_anchor === "start" ? 10 : -10); // temp fix
-    // Set initial hand and time location
-    hand = scene
-      .line(newHandX, padding * 1.5, newHandX, faceH)
-      .attr({
-        fill: "none",
+  // Prepping movement
+  movement = {
+    hand: {
+      view: null,
+      x: null,
+      y: null,
+      nextx: null,
+      attribs: {
         stroke: "#f40",
+        fill: "none",
         strokeWidth: 1
-      });
-    timeY = padding * 2.5;
-    time = scene
-      .text(timeX, timeY, t_display)
-      .attr({
+      }
+    },
+    clock: {
+      view: null,
+      anchor: null,
+      x: null,
+      y: null,
+      attribs: {
         fontFamily: "Courier New",
         fontSize: "15px",
-        textAnchor: t_anchor,
-        fill: "#f40"
-      });
-    // Launch updater
-    function updater() {
-      var new_d = new Date();
-      if (d.getSeconds() !== new_d.getSeconds()) {
-        d = new_d;
-        t = [d.getHours(), d.getMinutes(), d.getSeconds()];
-        t_display = d.toLocaleTimeString();
-        t_anchor = (t[0] % 12 <= 6) ? "start" : "end";
-        newHandX = hoursX + spacing * ((t[0] % 12) + (t[1] / 60));
-        timeX = newHandX + (t_anchor === "start" ? 10 : -10);
-        window.requestAnimationFrame(function () {
-          time.node.innerHTML = t_display;
-          if (handX !== newHandX) {
-            time.attr({
-              x: timeX,
-              textAnchor: t_anchor
-            });
-            handX = newHandX;
-            hand.attr({'x1': handX, 'x2': handX});
-          }
-          updater();
-        });
-      } else {
-        window.requestAnimationFrame(updater);
+        fill: "#f40",
+        textAnchor: "start"
       }
     }
-    window.requestAnimationFrame(updater);
-  }
+  };
 
-  // Start clock
-  initializeUpdater();
+  // Prepping first watch face
+  WF1 = {
+    mask: null,
+    markings: {
+      view: null,
+      path: "",
+      stroke: "#000",
+      measure: function (hour) {
+        var posx = WF1.hours.x + (watch.wdt / 12) * hour,
+          posy = WF1.hours.y + 30;
+        return {
+          posx: posx,
+          posy: posy,
+          first: "M" + [posx, posy - 15, posx, posy],
+          full: "M" + [posx, posy - 15, posx, posy]
+            + "M" + [posx - (watch.wdt / 72), posy - 3,
+                     posx - (watch.wdt / 72), posy]
+            + "M" + [posx - (watch.wdt / 72) * 2, posy - 3,
+                     posx - (watch.wdt / 72) * 2, posy]
+            + "M" + [posx - (watch.wdt / 72) * 3, posy - 9,
+                     posx - (watch.wdt / 72) * 3, posy]
+            + "M" + [posx - (watch.wdt / 72) * 4, posy - 3,
+                     posx - (watch.wdt / 72) * 4, posy]
+            + "M" + [posx - (watch.wdt / 72) * 5, posy - 3,
+                     posx - (watch.wdt / 72) * 5, posy]
+        };
+      }
+    },
+    hours: {
+      view: null,
+      tspans: null,
+      nums: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      x: watch.pad * 2,
+      y: watch.hgt - watch.pad * 1.5,
+      attribs: {
+        fontFamily: "Courier New",
+        fontSize: "20px",
+        textAnchor: "middle"
+      }
+    }
+  };
+
+  // Display some hours with WF1
+  WF1.hours.view = scene.text(WF1.hours.x, WF1.hours.y, WF1.hours.nums)
+    .attr(WF1.hours.attribs);
+
+  // Evenly space out the hours and add the markings for WF1
+  WF1.hours.tspans = WF1.hours.view.selectAll("tspan");
+  WF1.hours.nums.forEach(function (hour, index) {
+    var measurements = WF1.markings.measure(hour);
+    // Select tspan hour and move it into place
+    WF1.hours.tspans[index].attr({x: measurements.posx});
+    // Build markings path as as well
+    if (index === 0) {
+      WF1.markings.setup += measurements.first;
+    } else {
+      WF1.markings.setup += measurements.full;
+    }
+  });
+  // Add the markings
+  WF1.markings.view =
+    scene.path(WF1.markings.setup).attr({stroke: WF1.markings.stroke});
+
+  timer = {
+    date : {
+      current: null,
+      next: null
+    },
+    seconds: null,
+    minutes: null,
+    hours: null,
+    update: function () {
+      timer.date.current = timer.date.next;
+      timer.hours = timer.date.current.getHours();
+      timer.minutes = timer.date.current.getMinutes();
+      timer.seconds = timer.date.current.getSeconds();
+    },
+    timestamp: function () {
+      return timer.date.current.toLocaleTimeString();
+    }
+  };
+  // Initialize movement display
+  function movementInit() {
+    // Initial the next time value
+    timer.date.next = new Date();
+    // Update the rest of the timer
+    timer.update();
+    // Initialize hand
+    movement.hand.nextx = watch.pad * 2
+      + (watch.wdt / 12) * ((timer.hours % 12) + (timer.minutes / 60));
+    // Initialize clock
+    movement.clock.anchor = (timer.hours % 12 <= 6) ? "start" : "end";
+    movement.clock.y = watch.pad * 2.5;
+    movement.clock.x = movement.hand.nextx
+      + (movement.clock.anchor === "start" ? 1 : -1) * (watch.pad / 2);
+    // Set initial hand and time location
+    movement.hand.view = scene
+      .line(movement.hand.nextx, watch.pad * 1.5, movement.hand.nextx,
+          watch.hgt + watch.pad * 0.5)
+      .attr(movement.hand.attribs);
+    movement.clock.attribs.textAnchor = movement.clock.anchor;
+    movement.clock.view = scene
+      .text(movement.clock.x, movement.clock.y, timer.timestamp())
+      .attr(movement.clock.attribs);
+  }
+  movementInit();
+
+  // Setup movement updater
+  function movementUpdater() {
+    timer.date.next = new Date();
+    timer.update();
+    // Update hand
+    movement.hand.nextx = watch.pad * 2
+      + (watch.wdt / 12) * ((timer.hours % 12) + (timer.minutes / 60));
+    // Update clock
+    movement.clock.anchor = (timer.hours % 12 <= 6) ? "start" : "end";
+    movement.clock.x = movement.hand.nextx
+      + (movement.clock.anchor === "start" ? 1 : -1) * (watch.pad / 2);
+    // Draw changes
+    movement.clock.view.node.innerHTML = timer.timestamp();
+    movement.clock.view.attr({
+      x: movement.clock.x,
+      textAnchor: movement.clock.anchor
+    });
+    movement.hand.x = movement.hand.nextx;
+    movement.hand.view.attr({
+      x1: movement.hand.x,
+      x2: movement.hand.x
+    });
+    // Request next update
+    window.requestAnimationFrame(movementUpdater);
+  }
+  window.requestAnimationFrame(movementUpdater);
 
   // Display functions for each face
   displayFn = {
     // Number of registered faces
     registered: 2,
     0: function () {
-      Snap.animate(0, 1, function (val) {
+      Snap.animate(0, 1, function displayWF0(val) {
         // Move in large view
-        time.attr({
+        movement.clock.view.attr({
           fontSize: 15 * (1 + val) + 'px',
-          y: timeY + 55 * val
+          y: movement.clock.y + 55 * val
         });
         // Hide WF1's hours and markings
-        hours.attr({
+        WF1.hours.view.attr({
           opacity: 1 - val,
-          y: hoursY + 30 * val
+          y: WF1.hours.y + 30 * val
         });
-        markings.attr({
+        WF1.markings.view.attr({
           opacity: 1 - val,
           'stroke-dasharray': 20,
           'stroke-dashoffset': -20 * val
@@ -148,18 +212,18 @@ window.onload = function () {
       }, 160);
     },
     1: function () {
-      Snap.animate(0, 1, function (val) {
+      Snap.animate(0, 1, function displayWF1(val) {
         // Move out large view
-        time.attr({
+        movement.clock.view.attr({
           fontSize: 15 * (2 - val) + 'px',
-          y: timeY + 55 * (1 - val)
+          y: movement.clock.y + 55 * (1 - val)
         });
         // Show WF1's hours and markings
-        hours.attr({
+        WF1.hours.view.attr({
           opacity: val,
-          y: hoursY + 30 * (1 - val)
+          y: WF1.hours.y + 30 * (1 - val)
         });
-        markings.attr({
+        WF1.markings.view.attr({
           opacity: val,
           'stroke-dasharray': 20,
           'stroke-dashoffset': -20 * (1 - val)
@@ -170,7 +234,7 @@ window.onload = function () {
 
   // Then cycle through faces on scene click
   currentFace = 1; // WF1
-  scene.click(function () {
+  scene.click(function displayNextFace() {
     currentFace = (currentFace + 1) % displayFn.registered;
     displayFn[currentFace]();
   });
