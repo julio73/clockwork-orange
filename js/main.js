@@ -155,9 +155,9 @@ window.onload = function () {
     }
   };
 
-  // Then cycle thru faces on movement click
-  currentFace = 1;
-  movement.click(function () {
+  // Then cycle through faces on scene click
+  currentFace = 1; // WF1
+  scene.click(function () {
     currentFace = (currentFace + 1) % displayFn.registered;
     displayFn[currentFace]();
   });
