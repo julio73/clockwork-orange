@@ -134,23 +134,39 @@ window.onload = function () {
     0: function () {
       Snap.animate(0, 1, function (val) {
         // Move in large view
-        time.transform(
-          's' + [1 + val, 1 + val, timeX, timeY]
-            + 't' + [0, 15 * val]
-        );
-        // Hide WF1
-        WF1.node.style.opacity = 1 - val;
+        time.attr({
+          fontSize: 15 * (1 + val) + 'px',
+          y: timeY + 45 * val
+        });
+        // Hide WF1's hours and markings
+        hours.attr({
+          opacity: 1 - val,
+          y: hoursY + 30 * val
+        });
+        markings.attr({
+          opacity: 1 - val,
+          'stroke-dasharray': 20,
+          'stroke-dashoffset': -20 * val
+        });
       }, 160);
     },
     1: function () {
       Snap.animate(0, 1, function (val) {
         // Move out large view
-        time.transform(
-          's' + [1.5 - (0.5 * val), 1.5 - (0.5 * val), timeX, timeY]
-            + 't' + [0, 15 * (1 - val)]
-        );
-        // Show WF1
-        WF1.node.style.opacity = val;
+        time.attr({
+          fontSize: 15 * (2 - val) + 'px',
+          y: timeY + 45 * (1 - val)
+        });
+        // Show WF1's hours and markings
+        hours.attr({
+          opacity: val,
+          y: hoursY + 30 * (1 - val)
+        });
+        markings.attr({
+          opacity: val,
+          'stroke-dasharray': 20,
+          'stroke-dashoffset': -20 * (1 - val)
+        });
       }, 160);
     }
   };
