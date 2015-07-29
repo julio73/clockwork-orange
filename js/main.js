@@ -5,7 +5,7 @@ window.onload = function () {
     faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
     WF1, time, timeX, timeY, movement, displayFn, currentFace;
 
-  hoursNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  hoursNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
   faceH = faceW / 6;
   padding = 20;
@@ -16,7 +16,6 @@ window.onload = function () {
   hoursY = faceH - padding * 2;
   hoursX = padding * 2;
   spacing = faceW / 12;
-  markingsPath = "M" + [hoursX, hoursY + 30, hoursX, hoursY] + "m-5,0,10,0";
   gaps = {
     0: 0,
     1: spacing / 6,
@@ -34,19 +33,25 @@ window.onload = function () {
   });
 
   // Evenly space out the hours and build marking path
+  markingsPath = "";
   hourTSpans = hours.selectAll("tspan");
   hoursNums.forEach(function (hour, index) {
     var posx = hoursX + spacing * hour;
-    // Select hour and move it
+      // Select hour and move it
     hourTSpans[index].attr({x: posx});
-    // Build marking path
-    markingsPath
-      += "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30]
-      + "M" + [posx - gaps[1], hoursY + 27, posx - gaps[1], hoursY + 30]
-      + "M" + [posx - gaps[2], hoursY + 27, posx - gaps[2], hoursY + 30]
-      + "M" + [posx - gaps[3], hoursY + 21, posx - gaps[3], hoursY + 30]
-      + "M" + [posx - gaps[4], hoursY + 27, posx - gaps[4], hoursY + 30]
-      + "M" + [posx - gaps[5], hoursY + 27, posx - gaps[5], hoursY + 30];
+    if (hour === 0) {
+      markingsPath +=
+        "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30];
+    } else {
+      // Build marking path
+      markingsPath
+        += "M" + [posx - gaps[0], hoursY + 15, posx - gaps[0], hoursY + 30]
+        + "M" + [posx - gaps[1], hoursY + 27, posx - gaps[1], hoursY + 30]
+        + "M" + [posx - gaps[2], hoursY + 27, posx - gaps[2], hoursY + 30]
+        + "M" + [posx - gaps[3], hoursY + 21, posx - gaps[3], hoursY + 30]
+        + "M" + [posx - gaps[4], hoursY + 27, posx - gaps[4], hoursY + 30]
+        + "M" + [posx - gaps[5], hoursY + 27, posx - gaps[5], hoursY + 30];
+    }
   });
 
   // Add the markings
