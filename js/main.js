@@ -136,7 +136,7 @@ window.onload = function () {
         // Move in large view
         time.attr({
           fontSize: 15 * (1 + val) + 'px',
-          y: timeY + 45 * val
+          y: timeY + 55 * val
         });
         // Hide WF1's hours and markings
         hours.attr({
@@ -155,7 +155,7 @@ window.onload = function () {
         // Move out large view
         time.attr({
           fontSize: 15 * (2 - val) + 'px',
-          y: timeY + 45 * (1 - val)
+          y: timeY + 55 * (1 - val)
         });
         // Show WF1's hours and markings
         hours.attr({
