@@ -3,7 +3,7 @@ window.onload = function () {
   'use strict';
   var scene, padding, canvas, hours, hoursNums, hoursX, hoursY, hourTSpans,
     faceH, faceW, spacing, markings, markingsPath, gaps, hand, handX,
-    WF1, time, timeX, timeY, movement, displayFn, currentFace;
+    WF1, time, timeX, timeY, displayFn, currentFace;
 
   hoursNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   faceW = 720; // 6! (factorial)
@@ -123,9 +123,6 @@ window.onload = function () {
 
   // Start clock
   initializeUpdater();
-
-  // Group hand & time
-  movement = scene.group(hand, time);
 
   // Display functions for each face
   displayFn = {
