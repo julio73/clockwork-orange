@@ -164,25 +164,27 @@ window.onload = function () {
   // Setup movement updater
   function movementUpdater() {
     timer.date.next = new Date();
-    timer.update();
-    // Update hand
-    movement.hand.nextx = watch.pad * 2
-      + (watch.wdt / 12) * ((timer.hours % 12) + (timer.minutes / 60));
-    // Update clock
-    movement.clock.anchor = (timer.hours % 12 <= 6) ? "start" : "end";
-    movement.clock.x = movement.hand.nextx
-      + (movement.clock.anchor === "start" ? 1 : -1) * (watch.pad / 2);
-    // Draw changes
-    movement.clock.view.node.innerHTML = timer.timestamp();
-    movement.clock.view.attr({
-      x: movement.clock.x,
-      textAnchor: movement.clock.anchor
-    });
-    movement.hand.x = movement.hand.nextx;
-    movement.hand.view.attr({
-      x1: movement.hand.x,
-      x2: movement.hand.x
-    });
+    if (timer.date.next.getSeconds() !== timer.seconds) {
+      timer.update();
+      // Update hand
+      movement.hand.nextx = watch.pad * 2
+        + (watch.wdt / 12) * ((timer.hours % 12) + (timer.minutes / 60));
+      // Update clock
+      movement.clock.anchor = (timer.hours % 12 <= 6) ? "start" : "end";
+      movement.clock.x = movement.hand.nextx
+        + (movement.clock.anchor === "start" ? 1 : -1) * (watch.pad / 2);
+      // Draw changes
+      movement.clock.view.node.innerHTML = timer.timestamp();
+      movement.clock.view.attr({
+        x: movement.clock.x,
+        textAnchor: movement.clock.anchor
+      });
+      movement.hand.x = movement.hand.nextx;
+      movement.hand.view.attr({
+        x1: movement.hand.x,
+        x2: movement.hand.x
+      });
+    }
     // Request next update
     window.requestAnimationFrame(movementUpdater);
   }
