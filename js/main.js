@@ -56,6 +56,7 @@ window.onload = function () {
       attribs: {
         fontFamily: "Courier New",
         fontSize: "15px",
+        fontWeight: 500,
         fill: "#f40",
         textAnchor: "start"
       }
@@ -211,7 +212,11 @@ window.onload = function () {
         // Move in large view
         movement.clock.view.attr({
           fontSize: 15 * (1 + val) + 'px',
-          y: movement.clock.y + 55 * val
+          fontWeight: movement.clock.attribs.fontWeight + (200 * val),
+          y: movement.clock.y + 70 * val
+        });
+        movement.hand.view.attr({
+          strokeWidth: movement.hand.attribs.strokeWidth + (3 * val)
         });
         // Hide WF1's hours and markings
         WF1.hours.view.attr({
@@ -230,7 +235,11 @@ window.onload = function () {
         // Move out large view
         movement.clock.view.attr({
           fontSize: 15 * (2 - val) + 'px',
-          y: movement.clock.y + 55 * (1 - val)
+          fontWeight: movement.clock.attribs.fontWeight + (200 * (1 - val)),
+          y: movement.clock.y + 70 * (1 - val)
+        });
+        movement.hand.view.attr({
+          strokeWidth: movement.hand.attribs.strokeWidth + (3 * (1 - val))
         });
         // Show WF1's hours and markings
         WF1.hours.view.attr({
