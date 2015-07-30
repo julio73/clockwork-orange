@@ -6,7 +6,7 @@
 /*global window, Snap */
 window.onload = function () {
   'use strict';
-  var scene, watch, WF1, timer, movement, displayFn, currentFace;
+  var scene, canvas, watch, WF1, timer, movement, displayFn, currentFace;
 
   // Setup the watch
   watch = {
@@ -17,14 +17,22 @@ window.onload = function () {
     bkgrd: '#FFF' // background color
   };
 
+  // Setup canvas
+  canvas = {
+    view: null,
+    x1: watch.pad,
+    y1: watch.pad,
+    x2: 2 * watch.pad + watch.wdt,
+    y2: watch.hgt
+  };
+
   // Base the scene on watch 
   scene = new Snap(watch.wdt + watch.pad * 4, watch.hgt + watch.pad * 2)
                 .attr({id: "scn"});
 
-  // Put the watch canvas on the scene
-  watch.canvas = scene
-    .rect(watch.pad, watch.pad * 1.5,
-      watch.wdt + 2 * watch.pad, watch.hgt - watch.pad)
+  // Put the canvas on the scene
+  canvas.view = scene
+    .rect(canvas.x1, canvas.y1, canvas.x2, canvas.y2)
     .attr({fill: watch.bkgrd});
 
   // Prepping movement
