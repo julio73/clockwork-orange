@@ -122,6 +122,7 @@ window.onload = function () {
       current: null,
       next: null
     },
+    millis: null,
     seconds: null,
     minutes: null,
     hours: null,
@@ -130,6 +131,7 @@ window.onload = function () {
       timer.hours = timer.date.current.getHours();
       timer.minutes = timer.date.current.getMinutes();
       timer.seconds = timer.date.current.getSeconds();
+      timer.millis = timer.date.current.getMilliseconds();
     },
     timestamp: function () {
       return timer.date.current.toLocaleTimeString();
@@ -164,7 +166,7 @@ window.onload = function () {
   // Setup movement updater
   function movementUpdater() {
     timer.date.next = new Date();
-    if (timer.date.next.getSeconds() !== timer.seconds) {
+    if (Math.abs(timer.date.next.getMilliseconds() - timer.millis) > 250) {
       timer.update();
       // Update hand
       movement.hand.nextx = watch.pad * 2
@@ -179,11 +181,13 @@ window.onload = function () {
         x: movement.clock.x,
         textAnchor: movement.clock.anchor
       });
-      movement.hand.x = movement.hand.nextx;
-      movement.hand.view.attr({
-        x1: movement.hand.x,
-        x2: movement.hand.x
-      });
+      if (movement.hand.x !== movement.hand.nextx) {
+        movement.hand.x = movement.hand.nextx;
+        movement.hand.view.attr({
+          x1: movement.hand.x,
+          x2: movement.hand.x
+        });
+      }
     }
     // Request next update
     window.requestAnimationFrame(movementUpdater);
